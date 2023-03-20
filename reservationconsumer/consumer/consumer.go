@@ -11,7 +11,7 @@ type (
 
 	KafkaInput struct {
 		Consumer     *KafkaConsumer
-		InputChannel chan []byte
+		InputChannel chan *kafka.Message
 	}
 
 	KafkaConsumer struct {
@@ -40,7 +40,7 @@ const (
 func NewConsumer(config ConsumerConfig) *KafkaInput {
 	var (
 		consumer     = NewKafkaConsumer(config.Host, config.Topics, config.GroupId)
-		inputChannel = make(chan []byte, 1)
+		inputChannel = make(chan *kafka.Message, 1)
 	)
 	return &KafkaInput{Consumer: consumer, InputChannel: inputChannel}
 }
@@ -77,14 +77,14 @@ func NewKafkaConsumer(host string, topics []string, groupID string) *KafkaConsum
 	}
 }
 
-func (ki *KafkaInput) Poll() chan []byte {
+func (ki *KafkaInput) Poll() chan *kafka.Message {
 
 	go func() {
 		for {
-			ev := ki.Consumer.Consumer.Poll(1000)
+			ev := ki.Consumer.Consumer.Poll(500)
 			switch e := ev.(type) {
 			case *kafka.Message:
-				ki.InputChannel <- e.Value
+				ki.InputChannel <- e
 			case kafka.Error:
 				log.Errorf("%v consume_message_error in topics[%s], error: %v\n", e.Code(), strings.Join(ki.Consumer.Topics, ","), e)
 			default:
