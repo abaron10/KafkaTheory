@@ -60,12 +60,27 @@ Type time.Time.
 - TimestampType:
 The timestamp type of the records.
 
+- Headers:
+Additional data for the message.
+
+![image](https://user-images.githubusercontent.com/64280930/226462847-973d0693-efd9-474e-a285-7addb9050bd1.png)
+
 **Example of consumed message**
+
 ![image](https://user-images.githubusercontent.com/64280930/226445901-b1ff7571-bcb5-4ad2-bb64-be43daa98e26.png)
 
 
 # Commands
+- Create a topic
+```
 kafka-topics --create --bootstrap-server localhost:9092  --replication-factor 1 --partitions 2 --topic message-log
+```
+- List topics
+```
 kafka-topics --bootstrap-server localhost:9092 --list
+```
+- Delete a topic
+```
 kafka-topics --bootstrap-server localhost:9092 --delete --topic message-log
+```
 
