@@ -21,7 +21,9 @@ func main() {
 	cr := consumer.NewConsumer(consumer.ConsumerConfig{Host: "localhost:9092", Topics: []string{"message-log"}, GroupId: "my-reservationconsumer"})
 
 	for {
-		bytesEvent := <-cr.Poll()
+		kafkaEvent := <-cr.Poll()
+
+		bytesEvent := kafkaEvent.Value
 
 		var user models.User
 		json.Unmarshal(bytesEvent, &user)
@@ -30,7 +32,8 @@ func main() {
 			fmt.Println(err)
 			return
 		}
+		fmt.Println(kafkaEvent.TimestampType)
 
-		fmt.Println(string(bytesEvent))
+		fmt.Printf("message %s received from partition %d and offset %d\n", string(bytesEvent), kafkaEvent.TopicPartition.Partition, kafkaEvent.TopicPartition.Offset)
 	}
 }
