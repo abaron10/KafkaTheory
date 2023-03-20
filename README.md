@@ -45,6 +45,10 @@ Type TopicPartition struct {
     Error     error
 }
 ```
+
+1. Topic: Name of assigned topic. 
+
+
 - Value:
 Type []byte, passed value of a message.
 
