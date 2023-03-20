@@ -37,7 +37,7 @@ func (p *Producer) Emit(obj interface{}) error {
 
 	deliveryChan := make(chan kafka.Event)
 	err = p.p.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &p.topic, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &p.topic, Partition: 0},
 		Value:          messageBytes,
 	}, deliveryChan)
 
