@@ -39,7 +39,9 @@ const (
 
 func NewConsumer(config ConsumerConfig) *KafkaInput {
 	var (
-		consumer     = NewKafkaConsumer(config.Host, config.Topics, config.GroupId)
+		consumer = NewKafkaConsumer(config.Host, config.Topics, config.GroupId)
+		// Since inputChannel is buffered to one, it means it can only hold many messages but until one message is read, it will not free the thread
+		// Allowing to consume a message at a time
 		inputChannel = make(chan *kafka.Message, 1)
 	)
 	return &KafkaInput{Consumer: consumer, InputChannel: inputChannel}
