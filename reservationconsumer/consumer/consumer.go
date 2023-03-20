@@ -65,11 +65,19 @@ func NewKafkaConsumer(host string, topics []string, groupID string) *KafkaConsum
 		panic(err)
 	}
 
+	// Comment this paragraph if your consumer group can read from any partition
 	if err := kc.SubscribeTopics(topics, nil); err != nil {
 		log.Errorf("Error subscribing to topics: %v (%v)", err, topics)
 		kc.Close()
 		panic(err)
 	}
+
+	/*	IF CONSUMER GROUP MUST READ FROM SPECIFIC PARTITION, UNCOMMENT THE PARAGRAPH OF CODE SHOWN BELOW
+		topicPartition := kafka.TopicPartition{Topic: &topics[0], Partition: 1}
+		err = kc.Assign([]kafka.TopicPartition{topicPartition})
+		if err != nil {
+			panic(err)
+		}*/
 
 	return &KafkaConsumer{
 		Consumer:        kc,

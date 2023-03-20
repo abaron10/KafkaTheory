@@ -38,8 +38,10 @@ func (p *Producer) Emit(obj interface{}) error {
 
 	deliveryChan := make(chan kafka.Event)
 
+	// Change partition attribute from 0 to desired partition, otherwise set it to kafka.PartitionAny
+	// if round Robin is desired.
 	err = p.p.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &p.topic, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &p.topic, Partition: 2},
 		Key:            []byte(uuid.New().String()),
 		Value:          messageBytes,
 	}, deliveryChan)

@@ -34,6 +34,6 @@ func main() {
 		}
 		fmt.Println(kafkaEvent.TimestampType)
 
-		fmt.Printf("message %s received from partition %d and offset %d\n", string(bytesEvent), kafkaEvent.TopicPartition.Partition, kafkaEvent.TopicPartition.Offset)
+		fmt.Printf("message %s received from partition %d and offset %d with key: %s\n", string(bytesEvent), kafkaEvent.TopicPartition.Partition, kafkaEvent.TopicPartition.Offset, string(kafkaEvent.Key))
 	}
 }
