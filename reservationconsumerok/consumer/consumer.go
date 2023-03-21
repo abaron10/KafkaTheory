@@ -1,6 +1,7 @@
 package consumer
 
 import (
+	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	log "github.com/sirupsen/logrus"
 	"strings"
@@ -35,6 +36,7 @@ const (
 	groupIdKey           = "group.id"
 	maxPollIntervalMsKey = "max.poll.interval.ms"
 	sessionTimeoutMsKey  = "session.timeout.ms"
+	autoCommit           = "enable.auto.commit"
 )
 
 func NewConsumer(config ConsumerConfig) *KafkaInput {
@@ -51,14 +53,17 @@ func NewKafkaConsumer(host string, topics []string, groupID string) *KafkaConsum
 		bootstrapServersKey:  host,
 		groupIdKey:           groupID,
 		maxPollIntervalMsKey: maxPollInterval,
-		sessionTimeoutMsKey:  sessionTimeout,
+		// amount of time in ms for a message to be retained by a consumer, if the consumer does not commit the message
+		// kafka release it so other consumers can use it.
+		sessionTimeoutMsKey: sessionTimeout,
+		autoCommit:          false,
 	}
 
 	log.Infof("Setting up ConfigMap %v for topic cpgs-elastic-executor-eventmanager", config)
 
 	kc, err := kafka.NewConsumer(config)
 	if err != nil {
-		log.Errorf("Error creating a reservationconsumer: error=%v, bootstrap.server=%v, group.id=%v", err, host, groupID)
+		log.Errorf("Error creating a reservationconsumerfail: error=%v, bootstrap.server=%v, group.id=%v", err, host, groupID)
 		kc.Close()
 		panic(err)
 	}
@@ -81,10 +86,19 @@ func (ki *KafkaInput) Poll() chan []byte {
 
 	go func() {
 		for {
-			ev := ki.Consumer.Consumer.Poll(1000)
+			ev := ki.Consumer.Consumer.Poll(300)
 			switch e := ev.(type) {
 			case *kafka.Message:
-				ki.InputChannel <- e.Value
+				// Process the message
+				messageProcessedSuccessfully := ki.processMessage(e.Value)
+				if messageProcessedSuccessfully {
+					ki.Consumer.Consumer.CommitMessage(e)
+					ki.InputChannel <- e.Value
+				}
+
+				data, _ := ki.Consumer.Consumer.GetConsumerGroupMetadata()
+				fmt.Printf("Consumer instance ID: %s\n", data)
+
 			case kafka.Error:
 				log.Errorf("%v consume_message_error in topics[%s], error: %v\n", e.Code(), strings.Join(ki.Consumer.Topics, ","), e)
 			default:
@@ -94,6 +108,10 @@ func (ki *KafkaInput) Poll() chan []byte {
 
 	return ki.InputChannel
 
+}
+
+func (ki *KafkaInput) processMessage(value []byte) bool {
+	return true
 }
 
 func (ki *KafkaInput) Close() {
