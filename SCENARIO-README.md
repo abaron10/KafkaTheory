@@ -44,12 +44,12 @@ From the point of view of the consumer we can have two options for consuming the
 
 Partitioning is a key feature of Apache Kafka, and it provides several benefits for building distributed, scalable, and fault-tolerant messaging systems. Here are some of the benefits of partitioning in Kafka:
 
-Scalability: Partitioning allows Kafka to scale horizontally by distributing message data across multiple brokers, which can process messages in parallel. As the number of brokers and partitions increases, Kafka can handle larger volumes of messages and support more consumers.
+- Scalability: Partitioning allows Kafka to scale horizontally by distributing message data across multiple brokers, which can process messages in parallel. As the number of brokers and partitions increases, Kafka can handle larger volumes of messages and support more consumers.
 
-Availability: By replicating data across multiple brokers, Kafka can provide high availability in the event of broker failure or network partitions. If one broker fails, another broker can take over serving requests for the partitions hosted on the failed broker.
+- Availability: By replicating data across multiple brokers, Kafka can provide high availability in the event of broker failure or network partitions. If one broker fails, another broker can take over serving requests for the partitions hosted on the failed broker.
 
-Performance: Partitioning can improve message throughput and reduce message latency by allowing Kafka to process messages in parallel. Consumers can also read from multiple partitions concurrently, further improving performance.
+- Performance: Partitioning can improve message throughput and reduce message latency by allowing Kafka to process messages in parallel. Consumers can also read from multiple partitions concurrently, further improving performance.
 
-Retention and data management: Kafka can store large volumes of data across multiple partitions, and each partition can be configured with its own retention policy. This makes it easier to manage data and maintain message history for longer periods of time.
+- Retention and data management: Kafka can store large volumes of data across multiple partitions, and each partition can be configured with its own retention policy. This makes it easier to manage data and maintain message history for longer periods of time.
 
-Flexibility: Partitioning allows Kafka to support different use cases and workloads, such as event streaming, log aggregation, and messaging. Different partitions can be configured with different replication factors, retention policies, and message processing requirements.
+- Flexibility: Partitioning allows Kafka to support different use cases and workloads, such as event streaming, log aggregation, and messaging. Different partitions can be configured with different replication factors, retention policies, and message processing requirements.
