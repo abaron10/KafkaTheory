@@ -1,4 +1,6 @@
 ## Single broker - Double Partition
+![image](https://user-images.githubusercontent.com/64280930/226721244-65e78726-d853-49cd-8de6-8e2ba230adf9.png)
+
 
 Create a topic with the following configuration:
 ```
